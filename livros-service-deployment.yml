@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: livros-service
+spec:
+  selector:
+    matchLabels:
+      app: livros-service
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: livros-service
+    spec:
+      containers:
+        - name: livros-service
+          image: livros-service:v4
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://mysql:3306/db_livros"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "usuario"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "123"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: livros-service
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 31000
+  selector:
+    app: livros-service

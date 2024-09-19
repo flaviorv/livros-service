@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_livros
+      MYSQL_USER: usuario
+      MYSQL_PASSWORD: 123
+    ports:
+      - "3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  livros-service:
+    image:  livros-service:v4
+    container_name: livros-service
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+volumes:
+  mysql-data:
